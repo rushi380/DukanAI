@@ -1,11 +1,12 @@
 {
-  "version": 3,
+  "version": 2,
+  "name": "dukanai",
   "experimentalServices": {
     "frontend": {
       "rootDirectory": "frontend",
       "routePrefix": "/",
       "buildCommand": "npm install && npm run build",
-      "outputDirectory": "frontend/dist"
+      "outputDirectory": "dist"
     },
     "backend": {
       "rootDirectory": "backend",
