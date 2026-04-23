@@ -1,6 +1,19 @@
 {
-  "version": 2,
-  "buildCommand": "npm install",
+  "version": 3,
+  "experimentalServices": {
+    "frontend": {
+      "rootDirectory": "frontend",
+      "routePrefix": "/",
+      "buildCommand": "npm install && npm run build",
+      "outputDirectory": "frontend/dist"
+    },
+    "backend": {
+      "rootDirectory": "backend",
+      "routePrefix": "/api",
+      "buildCommand": "npm install",
+      "startCommand": "npm start"
+    }
+  },
   "env": {
     "MONGO_URI": "@mongo_uri",
     "GOOGLE_API_KEY": "@google_api_key",
@@ -10,21 +23,5 @@
     "SHOP_WHATSAPP_NUMBER": "@shop_whatsapp_number",
     "CORS_ORIGIN": "@cors_origin",
     "NODE_ENV": "production"
-  },
-  "functions": {
-    "backend/server.js": {
-      "memory": 1024,
-      "maxDuration": 30
-    }
-  },
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/backend/server.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/frontend/dist/$1"
-    }
-  ]
+  }
 }
