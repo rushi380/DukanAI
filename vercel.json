@@ -3,13 +3,13 @@
   "name": "dukanai",
   "experimentalServices": {
     "frontend": {
-      "rootDirectory": "frontend",
+      "entrypoint": "frontend",
       "routePrefix": "/",
       "buildCommand": "npm install && npm run build",
       "outputDirectory": "dist"
     },
     "backend": {
-      "rootDirectory": "backend",
+      "entrypoint": "backend",
       "routePrefix": "/api",
       "buildCommand": "npm install",
       "startCommand": "npm start"
