@@ -137,6 +137,58 @@ POST   /api/alerts/send        → Send custom WhatsApp message
 
 ---
 
+## 🚀 Deployment on Vercel
 
+### Prerequisites
+- GitHub account (repo already pushed)
+- Vercel account (free) — https://vercel.com
+- MongoDB Atlas account (free cluster)
+- API keys: Gemini, Twilio
 
+### One-Click Deployment
 
+1. **Go to Vercel** → https://vercel.com/new
+2. **Connect GitHub** → Select `rushi380/DukanAI` repository
+3. **Configure Environment Variables** in Vercel dashboard:
+   - `MONGO_URI` — MongoDB Atlas connection string
+   - `GOOGLE_API_KEY` — Gemini API key
+   - `TWILIO_ACCOUNT_SID` — From Twilio console
+   - `TWILIO_AUTH_TOKEN` — From Twilio console
+   - `TWILIO_WHATSAPP_NUMBER` — Twilio WhatsApp sandbox number
+   - `SHOP_WHATSAPP_NUMBER` — Your WhatsApp number (whatsapp:+91XXXXXXXXXX)
+   - `CORS_ORIGIN` — Leave empty (auto-configured)
+
+4. **Deploy** → Vercel automatically:
+   - Builds frontend (React + Vite)
+   - Deploys backend as serverless functions
+   - Routes `/api/*` to backend, static files to frontend
+
+5. **Update Frontend API URL** (if not using root domain):
+   - Create `.env.local` in `frontend/` directory
+   - Add: `VITE_API_URL=https://your-vercel-deployment.vercel.app/api`
+
+### Deployment Status
+- Frontend: Automatic (every push to `main`)
+- Backend: Automatic serverless function deployment
+- Database: Connected via MongoDB Atlas
+
+---
+
+## 🛠️ Troubleshooting
+
+**Issue: CORS errors in frontend?**
+- Check `CORS_ORIGIN` env variable in Vercel dashboard
+- Should match your Vercel deployment URL
+
+**Issue: API calls return 404?**
+- Verify backend environment variables are set in Vercel
+- Check that `.env` file is NOT committed (should be in `.gitignore`)
+
+**Issue: Multer file upload fails?**
+- Vercel has limitations on temp file storage
+- Use Cloudinary/Firebase Storage for production file uploads
+
+---
+
+## 📝 License
+Open source for Indian kirana shops 🇮🇳

@@ -1,6 +1,14 @@
 import axios from "axios";
 
-const api = axios.create({ baseURL: "/api" });
+// Get API base URL - works for both Vercel and local development
+const getBaseURL = () => {
+  if (import.meta.env.MODE === "development") {
+    return import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  }
+  return import.meta.env.VITE_API_URL || "/api";
+};
+
+const api = axios.create({ baseURL: getBaseURL() });
 
 export const itemsAPI = {
   getAll:      (params)   => api.get("/items", { params }),
