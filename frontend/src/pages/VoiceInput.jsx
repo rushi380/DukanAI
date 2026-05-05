@@ -261,7 +261,7 @@ export default function VoiceInput() {
   const actionColor = ACTION_COLOR[editForm.action] || C.green;
 
   return (
-    <div style={{ padding: 24, background: C.bg, minHeight: "100vh", fontFamily: "'Noto Sans Devanagari', sans-serif", maxWidth: 680, margin: "0 auto" }}>
+    <div style={{ padding: 24, background: C.bg, minHeight: "100vh", fontFamily: "'Noto Sans Devanagari', sans-serif" }}>
 
       {/* Header */}
       <div style={{ marginBottom: 28 }}>

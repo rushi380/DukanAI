@@ -116,7 +116,7 @@ router.post("/parse", async (req, res) => {
 
     let parsed = null;
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
       const result = await model.generateContent(`
 You are a Marathi kirana shop inventory assistant. The shop owner spoke:
 "${clean}"
@@ -204,7 +204,7 @@ router.post("/understand-item", async (req, res) => {
 
     let understood = null;
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
       const result = await model.generateContent(`
 You are helping add a NEW item to a Marathi kirana shop inventory.
 

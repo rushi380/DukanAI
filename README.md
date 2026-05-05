@@ -95,7 +95,7 @@ npm run dev
 
 ---
 
-## How to Use (Demo Flow for Hackathon)
+## How to Use (Demo Flow)
 
 ### 1. Add some items first
 Go to **सामान की लिस्ट** → Add items like:
@@ -151,7 +151,7 @@ POST   /api/alerts/send        → Send custom WhatsApp message
 2. **Connect GitHub** → Select `rushi380/DukanAI` repository
 3. **Configure Environment Variables** in Vercel dashboard:
    - `MONGO_URI` — MongoDB Atlas connection string
-   - `GOOGLE_API_KEY` — Gemini API key
+   - `GEMINI_API_KEY` — Gemini API key
    - `TWILIO_ACCOUNT_SID` — From Twilio console
    - `TWILIO_AUTH_TOKEN` — From Twilio console
    - `TWILIO_WHATSAPP_NUMBER` — Twilio WhatsApp sandbox number

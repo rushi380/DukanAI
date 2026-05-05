@@ -11,7 +11,7 @@ const router = express.Router();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const upload = multer({
-  dest: "uploads/",
+  dest: "/tmp",
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith("image/")) cb(null, true);
@@ -30,8 +30,8 @@ router.post("/scan", upload.single("bill"), async (req, res) => {
     const base64 = imageData.toString("base64");
     const mimeType = req.file.mimetype;
 
-    // ✅ FIX: Use gemini-1.5-flash (gemini-pro-vision is deprecated)
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // ✅ FIX: Use gemini-flash-latest
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
     const prompt = `This is a bill/invoice from an Indian supplier or kirana shop.
 Extract all items and their quantities from this bill.

@@ -21,14 +21,17 @@ app.use("/api/alerts", alertRoutes);
 // Health check
 app.get("/", (req, res) => res.json({ status: "DukanAI backend running" }));
 
-// Connect DB + start server
+// Connect DB
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB connected");
-    app.listen(process.env.PORT || 5000, () =>
-      console.log(`Server running on port ${process.env.PORT || 5000}`)
-    );  
+    if (process.env.NODE_ENV !== "production") {
+      app.listen(process.env.PORT || 5000, () =>
+        console.log(`Server running on port ${process.env.PORT || 5000}`)
+      );  
+    }
   })
   .catch((err) => console.error("DB connection failed:", err));
   
+export default app;

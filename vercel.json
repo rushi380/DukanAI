@@ -1,26 +1,26 @@
 {
   "version": 2,
-  "name": "dukanai",
-  "experimentalServices": {
-    "frontend": {
-      "entrypoint": "frontend",
-      "routePrefix": "/",
-      "buildCommand": "npm install && npm run build"
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
     },
-    "backend": {
-      "entrypoint": "backend",
-      "routePrefix": "/api",
-      "buildCommand": "npm install"
+    {
+      "src": "backend/server.js",
+      "use": "@vercel/node"
     }
-  },
-  "env": {
-    "MONGO_URI": "@mongo_uri",
-    "GOOGLE_API_KEY": "@google_api_key",
-    "TWILIO_ACCOUNT_SID": "@twilio_account_sid",
-    "TWILIO_AUTH_TOKEN": "@twilio_auth_token",
-    "TWILIO_WHATSAPP_NUMBER": "@twilio_whatsapp_number",
-    "SHOP_WHATSAPP_NUMBER": "@shop_whatsapp_number",
-    "CORS_ORIGIN": "@cors_origin",
-    "NODE_ENV": "production"
-  }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/backend/server.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/frontend/dist/$1"
+    }
+  ]
 }
