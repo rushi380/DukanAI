@@ -12,14 +12,20 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
+// Routes (with /api prefix for local dev)
 app.use("/api/items", itemRoutes);
 app.use("/api/voice", voiceRoutes);
 app.use("/api/bill", billRoutes);
 app.use("/api/alerts", alertRoutes);
 
+// Routes (without /api prefix for Vercel experimentalServices routing)
+app.use("/items", itemRoutes);
+app.use("/voice", voiceRoutes);
+app.use("/bill", billRoutes);
+app.use("/alerts", alertRoutes);
+
 // Health check
-app.get("/", (req, res) => res.json({ status: "DukanAI backend running" }));
+app.get(["/", "/api"], (req, res) => res.json({ status: "DukanAI backend running" }));
 
 // Connect DB
 mongoose
