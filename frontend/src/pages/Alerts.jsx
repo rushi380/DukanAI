@@ -139,14 +139,6 @@ export default function Alerts() {
             </button>
           </div>
 
-          {/* Tip card */}
-          <div style={{ background: "#4f9cf910", border: "1px solid #4f9cf933", borderRadius: 14, padding: 16 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: "var(--blue)", marginBottom: 6 }}>💡 टीप</div>
-            <div style={{ fontSize: 12, color: "var(--text3)", lineHeight: 1.7 }}>
-              WhatsApp Sandbox setup केल्यास — जेव्हा एखादा माल संपतो, तेव्हा automatic alert येतो.
-              Twilio settings .env मध्ये भरा.
-            </div>
-          </div>
         </div>
       </div>
     </div>
