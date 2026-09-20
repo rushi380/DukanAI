@@ -5,7 +5,10 @@ const navItems = [
   { path: "/",          label: "मुख्यपृष्ठ",    icon: "⊞",  color: "#10d9a0", desc: "Dashboard" },
   { path: "/voice",     label: "आवाजाने बदला", icon: "◉",  color: "#4f9cf9", desc: "Voice" },
   { path: "/inventory", label: "मालाची यादी",   icon: "▦",  color: "#f5c842", desc: "Inventory" },
-  { path: "/bill",      label: "बिल स्कॅन",     icon: "◈",  color: "#a78bfa", desc: "Bill Scan" },
+  { path: "/udhaar",    label: "उधार खाते",     icon: "₹",  color: "#a78bfa", desc: "Credit" },
+  { path: "/forecast",  label: "ऑर्डर अंदाज",    icon: "◈",  color: "#ff9f43", desc: "Forecast" },
+  { path: "/bill",      label: "बिल स्कॅन",     icon: "▤",  color: "#5edfff", desc: "Bill Scan" },
+  { path: "/bot",       label: "WhatsApp बॉट",  icon: "✆",  color: "#25D366", desc: "Bot" },
   { path: "/alerts",    label: "सूचना",          icon: "◎",  color: "#f5455a", desc: "Alerts" },
 ];
 

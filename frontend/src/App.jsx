@@ -6,6 +6,9 @@ import VoiceInput from "./pages/VoiceInput";
 import Inventory from "./pages/Inventory";
 import BillScan from "./pages/BillScan";
 import Alerts from "./pages/Alerts";
+import Udhaar from "./pages/Udhaar";
+import Forecast from "./pages/Forecast";
+import WhatsAppBot from "./pages/WhatsAppBot";
 
 export default function App() {
   return (
@@ -17,6 +20,9 @@ export default function App() {
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/bill" element={<BillScan />} />
           <Route path="/alerts" element={<Alerts />} />
+          <Route path="/udhaar" element={<Udhaar />} />
+          <Route path="/forecast" element={<Forecast />} />
+          <Route path="/bot" element={<WhatsAppBot />} />
         </Route>
       </Routes>
       <Toaster

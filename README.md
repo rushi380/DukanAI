@@ -10,15 +10,22 @@ Voice + WhatsApp inventory management for Indian kirana shops.
 dukanai/
 ├── backend/
 │   ├── models/
-│   │   ├── Item.js          ← Product schema (Hindi fields)
-│   │   └── SaleLog.js       ← Every stock change log
+│   │   ├── Item.js          ← Product schema
+│   │   ├── SaleLog.js       ← Every stock change log
+│   │   ├── Customer.js      ← Udhaar (credit) customers
+│   │   └── CreditLog.js     ← Udhaar/payment entries
 │   ├── routes/
 │   │   ├── items.js         ← Full CRUD + stock update API
-│   │   ├── voice.js         ← Hindi NLP parser (Gemini AI)
+│   │   ├── voice.js         ← Marathi NLP parser (Gemini AI)
 │   │   ├── bill.js          ← Bill photo scan (Gemini Vision)
-│   │   └── alerts.js        ← WhatsApp alert triggers
+│   │   ├── alerts.js        ← WhatsApp alert triggers
+│   │   ├── credit.js        ← Udhaar ledger by voice
+│   │   ├── forecast.js      ← Consumption velocity + reorder
+│   │   └── webhook.js       ← WhatsApp bot (voice notes + confirmations)
 │   ├── services/
 │   │   └── whatsapp.js      ← Twilio WhatsApp integration
+│   ├── utils/
+│   │   └── nlp.js           ← Shared Marathi NLP helpers
 │   ├── server.js
 │   ├── package.json
 │   └── .env.example
@@ -26,12 +33,16 @@ dukanai/
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   │   └── Layout.jsx       ← Hindi sidebar navigation
+│   │   │   ├── Layout.jsx       ← Marathi sidebar navigation
+│   │   │   └── VoiceAddItem.jsx ← Voice add-item dialog
 │   │   ├── pages/
 │   │   │   ├── Dashboard.jsx    ← Stats + recent activity
-│   │   │   ├── VoiceInput.jsx   ← Mic button + Hindi NLP
-│   │   │   ├── Inventory.jsx    ← Full CRUD in Hindi
+│   │   │   ├── VoiceInput.jsx   ← Mic button + Marathi NLP
+│   │   │   ├── Inventory.jsx    ← Full CRUD
 │   │   │   ├── BillScan.jsx     ← Photo upload + AI read
+│   │   │   ├── Udhaar.jsx       ← Credit ledger by voice
+│   │   │   ├── Forecast.jsx     ← Stock-out prediction + ordering
+│   │   │   ├── WhatsAppBot.jsx  ← Bot simulator + setup
 │   │   │   └── Alerts.jsx       ← WhatsApp alerts panel
 │   │   ├── hooks/
 │   │   │   └── useVoice.js      ← Web Speech API hook
@@ -55,12 +66,12 @@ dukanai/
 |------|-----------|
 | Frontend | React 18 + Vite |
 | Voice | Web Speech API (built into Chrome) |
-| NLP | Google Gemini Pro API |
-| Bill Scan | Google Gemini Pro Vision API |
+| NLP | Google Gemini Flash |
+| Bill Scan | Google Gemini Vision |
 | Backend | Node.js + Express |
 | Database | MongoDB Atlas |
 | WhatsApp | Twilio WhatsApp API |
-| Language | Hindi (Devanagari) UI |
+| Language | Marathi (Devanagari) UI |
 
 ---
 
@@ -114,6 +125,27 @@ Go to **बिल स्कैन** → Upload a supplier bill photo → AI read
 ### 4. Show WhatsApp alert
 Go to **अलर्ट** → Click "Summary भेजें" → WhatsApp message appears on phone
 
+### 5. Udhaar by voice (उधार खाते)
+Go to **उधार खाते** → Click mic → Say:
+- *"शर्मा काकांनी 500 चा माल घेतला"* → Udhaar ₹500 recorded against Sharma
+- *"शर्मा काकांनी 200 पैसे दिले"* → Payment ₹200 recorded, balance drops
+- Check the balance, tap 📱 to send a WhatsApp payment reminder
+
+### 6. Predictive reorder (ऑर्डर अंदाज)
+Go to **ऑर्डर अंदाज** → The app computes each item's sales velocity from the last 14 days
+of SaleLogs and shows how many days of stock remain → Tick items → "ऑर्डर ड्राफ्ट" →
+Edit the order → Send to the supplier on WhatsApp (`SUPPLIER_WHATSAPP`)
+
+### 7. WhatsApp bot — no app needed (WhatsApp बॉट)
+Send a message **or a voice note** to the shop's Twilio WhatsApp number:
+- *"दहा किलो गहू आला"* → stock updated
+- *"शर्मा काकांनी 500 चा माल घेतला"* → bot asks "नोंदवायचा? (हो / नाही)" — money always confirms
+- *"ऑर्डर कर"* → bot drafts the supplier order from the forecast and sends it on confirmation
+- *"आजचा हिशोब सांग"* → today's summary right in the chat
+
+Point the Twilio sandbox webhook at `POST https://<backend>/api/webhook`.
+To try the bot logic without Twilio, use the **simulator** on the WhatsApp बॉट page.
+
 ---
 
 ## API Endpoints
@@ -127,12 +159,28 @@ PUT    /api/items/:id          → Edit item
 PATCH  /api/items/:id/stock    → Update quantity
 DELETE /api/items/:id          → Remove item
 
-POST   /api/voice/parse        → Parse Hindi voice text
+POST   /api/voice/parse        → Parse Marathi voice text
 POST   /api/bill/scan          → Scan bill image
 
 GET    /api/alerts             → Low/out stock list
 POST   /api/alerts/daily-summary → Send WhatsApp summary
 POST   /api/alerts/send        → Send custom WhatsApp message
+
+GET    /api/credit             → Customers + udhaar balances
+POST   /api/credit/customers   → Add customer
+POST   /api/credit/parse       → Parse udhaar/payment sentence (voice)
+POST   /api/credit/entry       → Record udhaar or payment
+GET    /api/credit/logs/:id    → Customer credit history
+POST   /api/credit/remind/:id  → WhatsApp payment reminder
+POST   /api/credit/settle/:id  → Record full payment
+
+GET    /api/forecast           → Stock-out forecast per item
+POST   /api/forecast/draft     → Draft supplier order message
+POST   /api/forecast/send      → Send order to supplier on WhatsApp
+
+POST   /api/webhook            → Twilio WhatsApp bot webhook
+GET    /api/webhook            → Bot status
+POST   /api/webhook/simulate   → Test bot without Twilio
 ```
 
 ---
@@ -154,16 +202,22 @@ POST   /api/alerts/send        → Send custom WhatsApp message
    - `GEMINI_API_KEY` — Gemini API key
    - `TWILIO_ACCOUNT_SID` — From Twilio console
    - `TWILIO_AUTH_TOKEN` — From Twilio console
-   - `TWILIO_WHATSAPP_NUMBER` — Twilio WhatsApp sandbox number
-   - `SHOP_WHATSAPP_NUMBER` — Your WhatsApp number (whatsapp:+91XXXXXXXXXX)
-   - `CORS_ORIGIN` — Leave empty (auto-configured)
+   - `TWILIO_WHATSAPP_FROM` — Twilio WhatsApp sandbox number (whatsapp:+1415...)
+   - `OWNER_WHATSAPP` — Your WhatsApp number (whatsapp:+91XXXXXXXXXX)
+   - `SUPPLIER_WHATSAPP` — (optional) supplier's number for bot orders
 
 4. **Deploy** → Vercel automatically:
    - Builds frontend (React + Vite)
    - Deploys backend as serverless functions
    - Routes `/api/*` to backend, static files to frontend
 
-5. **Update Frontend API URL** (if not using root domain):
+5. **Connect the WhatsApp bot** (optional):
+   - Twilio Console → Messaging → Try it out → Send a WhatsApp message
+   - Set the sandbox **When a message comes in** webhook to:
+     `https://<your-deployment>.vercel.app/api/webhook` (POST)
+   - Join the sandbox from your phone ("join <code>") and message it — text or voice notes
+
+6. **Update Frontend API URL** (if not using root domain):
    - Create `.env.local` in `frontend/` directory
    - Add: `VITE_API_URL=https://your-vercel-deployment.vercel.app/api`
 
@@ -176,13 +230,19 @@ POST   /api/alerts/send        → Send custom WhatsApp message
 
 ## 🛠️ Troubleshooting
 
-**Issue: CORS errors in frontend?**
-- Check `CORS_ORIGIN` env variable in Vercel dashboard
-- Should match your Vercel deployment URL
-
 **Issue: API calls return 404?**
 - Verify backend environment variables are set in Vercel
 - Check that `.env` file is NOT committed (should be in `.gitignore`)
+
+**Issue: WhatsApp bot doesn't reply?**
+- Check the Twilio sandbox webhook points to `https://<backend>/api/webhook` (POST)
+- Voice-note transcription needs `TWILIO_ACCOUNT_SID` + `TWILIO_AUTH_TOKEN` (media download)
+- Test the bot logic first in the app's **WhatsApp बॉट** page (simulator, no Twilio needed)
+
+**Issue: Orders/alerts never arrive?**
+- Without Twilio credentials the service runs in *simulation* mode — messages
+  are logged to the server console instead of sent. Check `TWILIO_WHATSAPP_FROM`
+  and `OWNER_WHATSAPP` are set (see `.env.example`).
 
 **Issue: Multer file upload fails?**
 - Vercel has limitations on temp file storage

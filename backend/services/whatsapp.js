@@ -11,15 +11,15 @@ try {
   console.log("Twilio configured नाही:", e.message);
 }
 
-export async function sendWhatsApp(message) {
+export async function sendWhatsApp(message, to = process.env.OWNER_WHATSAPP) {
   if (!client) {
-    console.log("[WhatsApp simulation]:", message);
-    return { simulated: true, message };
+    console.log("[WhatsApp simulation]:", message, "→", to || "(owner)");
+    return { simulated: true, message, to };
   }
   try {
     const result = await client.messages.create({
       from: process.env.TWILIO_WHATSAPP_FROM,
-      to: process.env.OWNER_WHATSAPP,
+      to,
       body: message,
     });
     return { sid: result.sid, status: result.status };
@@ -27,6 +27,12 @@ export async function sendWhatsApp(message) {
     console.error("WhatsApp पाठवणे अयशस्वी:", err.message);
     return { error: err.message };
   }
+}
+
+// Send to an arbitrary number (supplier orders, customer reminders)
+export async function sendWhatsAppTo(number, message) {
+  if (!number) return { error: "क्रमांक नाही" };
+  return sendWhatsApp(message, number);
 }
 
 export async function checkLowStock(item) {

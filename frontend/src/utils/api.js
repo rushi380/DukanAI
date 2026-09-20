@@ -46,4 +46,24 @@ export const alertsAPI = {
   sendCustom:  (msg)  => api.post("/alerts/send", { message: msg }),
 };
 
+export const creditAPI = {
+  list:        ()         => api.get("/credit"),
+  addCustomer: (data)     => api.post("/credit/customers", data),
+  parse:       (text)     => api.post("/credit/parse", { text }),
+  entry:       (data)     => api.post("/credit/entry", data),
+  logs:        (id)       => api.get(`/credit/logs/${id}`),
+  remind:      (id)       => api.post(`/credit/remind/${id}`),
+  settle:      (id)       => api.post(`/credit/settle/${id}`),
+};
+
+export const forecastAPI = {
+  get:   ()     => api.get("/forecast"),
+  draft: (data) => api.post("/forecast/draft", data),
+  send:  (data) => api.post("/forecast/send", data),
+};
+
+export const botAPI = {
+  simulate: (text) => api.post("/webhook/simulate", { text }),
+};
+
 export default api;
