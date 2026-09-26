@@ -39,10 +39,12 @@ function connectDB() {
       .connect(uri, { serverSelectionTimeoutMS: 8000 })
       .then(() => {
         console.log("MongoDB connected");
+        globalThis.__dukanaiDbError = null;
         return mongoose.connection;
       })
       .catch((err) => {
         console.error("DB connection failed:", err.message);
+        globalThis.__dukanaiDbError = err.message;
         // Clear the cached promise so the next invocation can retry
         globalThis.__dukanaiMongoosePromise = null;
         return null;
@@ -88,6 +90,7 @@ app.get(["/", "/api"], (req, res) =>
   res.json({
     status: "DukanAI backend running",
     db: READY_STATE[mongoose.connection.readyState] || "unknown",
+    dbError: globalThis.__dukanaiDbError || null,
     env: process.env.NODE_ENV || "development",
     time: new Date().toISOString(),
   })
@@ -104,8 +107,9 @@ app.use((err, req, res, next) => {
   res.status(500).json({ success: false, message: err.message });
 });
 
-// Local dev server (Vercel serverless handles production invocations)
-if (process.env.NODE_ENV !== "production") {
+// Local dev server (Vercel serverless handles production invocations;
+// VERCEL=1 is set automatically on their runtime even if NODE_ENV is copied over wrong)
+if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
   app.listen(process.env.PORT || 5000, () =>
     console.log(`Server running on port ${process.env.PORT || 5000}`)
   );
