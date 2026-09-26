@@ -37,3 +37,6 @@ uploads/
 
 # Misc
 .cache/
+
+# Vercel local settings
+.vercel/
